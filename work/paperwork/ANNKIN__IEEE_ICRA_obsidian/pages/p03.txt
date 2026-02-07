@@ -1,0 +1,48 @@
+Fig. 1. Three-dimensional model and prototype of the 6-RSS Stewart
+platform-based master device. This figure displays the CAD model (left)
+and the prototype (right) of the 6-RSS Stewart Platform-based master device,   Fig. 3. Experimental setup for training data acquisition using an Optical
+designed for six degrees of freedom (6-DoF) motion                             Tracking System (OTS) with the master device. This setup depicts the
+                                                                               acquisition of training data, where an infrared marker on the master device’s
+                                                                               control stick is tracked by an OTS to provide ground truth pose data for ANN
+                                                                               training
+
+
+
+                                                                               tracking data with the encoder angles received simultaneously
+                                                                               from the master controller, storing these paired datasets in
+                                                                               memory. Once data collection is completed, the paired dataset
+                                                                               is saved to a file for further processing. The tracking results
+                                                                               from the OTS are represented as a 4x4 transformation matrix.
+                                                                               Note that the pose of the top plate’s center is determined by
+Fig. 2. Geometric structure of the master device and its connection with the   applying a pre-defined transformation between the marker and
+kinematic solver, illustrating the control architecture
+                                                                               the top plate’s center from a three-dimensional CAD model.
+                                                                               This approach enables indirect tracking of the top plate’s
+the Master Controller. The kinematic solver, which performs                    center by tracking the marker fixed to the control stick. The
+kinematic analysis using a ANN model, is implemented on a                      Cartesian coordinates of the top plate’s center are defined as
+computing platform equipped with an Intel i7 CPU, 16 GB                        ti = {x, y, z} for translation and ri = {rx , ry , rz } for rotation
+of RAM, and an NVIDIA 2080 Ti GPU. In this system, the                         by Euler angles.
+rotational angles measured by the rotary encoders of the master
+device are fed into a trained ANN model. The model computes                    B. ANN Model for Forward Kinematics
+and outputs the Cartesian coordinates that define the position                    The ANN model consists of an input layer with six nodes,
+and orientation of the center of the master device’s top plate.                two hidden layers, and an output layer with six nodes, as
+This real-time computation facilitates the translation of the                  illustrated in Figure 4. The six encoder angles (θ1 . . . θ6 ) from
+master device’s movements into precise control commands for                    the master device serve as the input, while the output consists
+the slave robot.                                                               of the Cartesian coordinate position (x, y, z) and orientation
+                                                                               (rx , ry , rz ) of the top plate’s center. Additional layers could
+           III. ANN- BASED F ORWARD K INEMATICS
+                                                                               lead to overfitting and prolonged training times, which were
+A. Data Acquisition for ANN Model Training                                     deliberately avoided to optimize model performance and effi-
+   The training dataset for ANN-based forward kinematics                       ciency.
+consists of angle data from the six encoders of the master                        To optimize the ANN for solving the forward kinematics
+device, along with simultaneously recorded position and ori-                   problem, we fixed some hyperparameters as listed in Table I.
+entation data of the top plate’s center obtained via OTS. The                  For the remaining hyperparameters—such as the number of
+encoder angles serve as input values for the ANN model, while                  hidden layer nodes, learning rate, and batch size—we applied
+the OTS data acts as labels for supervised learning. Figure 3                  the Asynchronous Successive Halving Algorithm (ASHA) [26]
+illustrates the configuration for data acquisition. An infrared                to efficiently search for optimal values. ASHA iteratively
+marker is attached to the control stick of the master device’s                 refines hyperparameters by evaluating multiple configurations
+top plate to capture its position and orientation. When the                    in parallel, allocating more resources to promising candidates
+user holds and moves the control stick, the OTS tracks the                     while discarding suboptimal ones early. This method enabled
+marker at a sampling rate of 100 Hz and transmits the data                     the model to identify the optimal learning rate and network
+to a data logger. The data logger synchronizes the marker                      structure while reducing computational cost. The search range
+

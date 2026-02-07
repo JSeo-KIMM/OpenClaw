@@ -1,0 +1,61 @@
+                              End-to-End Inverse Kinematics Framework for 6-RSS Stewart Platform                                       9
+
+
+[12] R. Gao, “Inverse kinematics solution of robotics based           [25] B. Valencia-Vidal, E. Ros, I. Abadía, and N. R. Luque,
+     on neural network algorithms,” Journal of Ambient Intel-              “Bidirectional recurrent learning of inverse dynamic mod-
+     ligence and Humanized Computing, vol. 11, no. 12, pp.                 els for robots with elastic joints: A real-time real-world im-
+     6199–6209, 2020.                                                      plementation,” Frontiers in Neurorobotics, vol. 17, 2023.
+[13] D. Cagigas-Muñiz, “Artificial neural networks for inverse        [26] M. K. Safeena, K. S. Jiji, and R. Kumar P, “Survey paper
+     kinematics problem in articulated robots,” Engineering Ap-            on the forward kinematics solution of a Stewart platform,”
+     plications of Artificial Intelligence, 2023.                          Proc. of the 2nd International Conference on Next Gener-
+                                                                           ation Intelligent Systems (ICNGIS), pp. 1–8, 2022.
+[14] A. R. J. Almusawi, L. C. Dülger, and S. Kapucu, “A new
+     artificial neural network approach in solving inverse kine-
+     matics of robotic arm (Denso VP6242),” Computational             Publisher’s Note Springer Nature remains neutral with regard
+     Intelligence and Neuroscience, 2016.                             to jurisdictional claims in published maps and institutional affil-
+[15] A. Hassan, M. El-Habrouk, and S. Deghedie, “In-                  iations.
+     verse kinematics of redundant manipulators formulated as
+     quadratic programming optimization problem solved using
+     recurrent neural networks: A review,” Robotica, vol. 38, no.
+     8, pp. 1495–1512, 2020.
+[16] N. Wagaa, H. Kallel, and N. Mellouli, “Analytical and
+     deep learning approaches for solving the inverse kinematic
+     problem of a high degrees of freedom robotic arm,” Engi-
+     neering Applications of Artificial Intelligence, vol. 123, pp.
+     106301, 2023.
+[17] Y. Bai and S. J. Hsieh, “A hybrid method using FAB-
+     RIK and custom ANN in solving inverse kinematic for
+     generic serial robot manipulator,” International Journal of
+     Advanced Manufacturing Technology, vol. 130, pp. 4883–
+     4904, 2024.
+[18] J. Chen and H. Y. K. Lau, “A hybrid inverse kinematics
+     framework for redundant robot manipulators based on hier-
+     archical clustering and distal teacher learning,” Proc. of the
+     IEEE International Conference on Robotics and Biomimet-
+     ics (ROBIO), pp. 2597–2602, 2015.
+[19] V. B. Semwal and Y. Gupta, “Performance analysis of
+     data-driven techniques for solving inverse kinematics prob-
+     lems,” in Intelligent Systems and Applications (IntelliSys
+     2021), Springer, vol. 294, 2021.
+[20] A. Mishra, A. Kumar, and N. Tiwari, “Neural network and
+     kinematic control of a Stewart platform for animatronic ap-
+     plication,” Proc. of the 6th International Conference on Re-
+     cent Advances in Information Technology, 2025.
+[21] J. S. Toquica, P. da S. Oliveira, W. S. R. Souza, J. M. S. T.
+     Motta, and D. L. Borges, “An analytical and a deep learning
+     model for solving the inverse kinematic problem of an in-
+     dustrial parallel robot,” Computers & Industrial Engineer-
+     ing, vol. 151, pp. 106682, 2021.
+[22] R. Liaw, E. Liang, R. Nishihara, P. Moritz, J. E. Gonzalez,
+     and I. Stoica, “Tune: A research platform for distributed
+     model selection and training,” arXiv:1807.05118, 2018.
+[23] N. Wagaa, H. Kallel, and N. Mellouli, “Analytical and
+     deep learning approaches for solving the inverse kinematic
+     problem of a high degrees of freedom robotic arm,” Engi-
+     neering Applications of Artificial Intelligence, vol. 123, pp.
+     106301, 2023.
+[24] J. Zhao, M. Monforte, G. Indiveri, B. Chiara, and D. Elisa,
+     “Learning inverse kinematics using neural computational
+     primitives on neuromorphic hardware,” npj Robotics, vol.
+     1, pp. 1, 2023.
+

@@ -1,0 +1,452 @@
+      Data-Driven Real-time Forward Kinematics for 6-RSS Stewart
+  Platform-based Master Device: An OTS-Enhanced ANN Approach
+                                                         ***,***,***,***
+
+
+   Abstract—Forward kinematics of parallel mechanisms, such as       such as flight simulators, robotic surgery, and motion tracking
+the 6-RSS Stewart platform, presents significant challenges due to   systems.
+their highly nonlinear and coupled joint structures. Unlike serial      The kinematic solutions for Stewart platform have been
+manipulators, parallel mechanisms lack a widely accepted closed-
+form forward kinematic solution, making real-time computation        studied in many studies. An exact analytical method for
+difficult. Traditional numerical approaches are often constrained    determining the kinematic and dynamic parameters of a
+by high computational costs and convergence issues, limiting their   Stewart platform was presented in [2]. The authors of [3]
+applicability in real-time control. To address these limitations,    introduced forward and inverse kinematics of the Stewart
+this study proposes an Artificial Neural Network (ANN)-based         platform by using Denavit-Hartenberg notation simplifying the
+forward kinematics method to efficiently estimate the position
+and orientation of a 6-RSS Stewart platform-based master             6-6 platform to 3-6 platform. A complete solution for the
+device from joint angle information. The proposed approach           inverse kinematics of the Stewart platform was provided in
+employs an ANN trained on data collected from an Optical             [4], which also discusses the difficulties in solving forward
+Tracking System (OTS), which captures the master device’s            kinematics due to its nonlinearity and complexity. Since there
+pose in Cartesian space. Corresponding joint-space encoder           is no widely accepted closed-form solution for the forward
+angles serve as training data, enabling the model to learn the
+nonlinear kinematic relationships between the two coordinate         kinematics of Stewart platform, several numerical solutions
+systems. Real-time experiments validated the ANN model by            have been introduced. Studies [5]–[7] proposed a method
+integrating 6-RSS Stewart platform-based master device with a        based on the Newton-Raphson algorithm, while [8] introduced
+6-degree-of-freedom (6-DoF) serial robotic arm in a teleoperation    a Levenberg-Marquardt (LM) algorithm-based approach. In
+scenario. The developed ANN-based forward kinematics model           [9], a Support Vector Regression-based forward kinematics
+operated at 1 kHz, achieving a motion tracking accuracy of
+1.414 mm RMSE for the synchronized movements of the master           solution was presented. However numerical methods may not
+device and the robot arm. These results confirm that ANN-            be suitable for real-time applications due to their iterative
+based forward kinematics provides a computationally efficient        nature and potential non-convergence issues.
+and reliable alternative to conventional methods, enabling real-        The master device in this study is based on a 6-RSS parallel
+time kinematic computation for teleoperation, robotic control,       manipulator, modified from the conventional Stewart Platform,
+and related applications.
+   Index Terms—ANN-based Kinematics, 6-RSS Stewart Plat-
+                                                                     consisting of six revolute joints (R) for rotary encoders and
+form, Parallel Mechanism, Teleoperation.                             twelve spherical joints (S) with rod-end bearings. The angular
+                                                                     displacements of these components determine the position and
+                      I. I NTRODUCTION                               orientation of the top plate, exhibiting more complex nonlinear
+                                                                     behavior compared to linear actuator-based Stewart platforms.
+   In teleoperation systems, a master device is essential to         Although inverse kinematic solutions for 6-RSS Stewart plat-
+control a slave robot, allowing operators to perform precise and     form can be found in the several previous studies [10]–[12],
+complex tasks remotely. When the master device and the slave         no clear closed-form solution for the forward kinematics exists
+robot share identical or scale and mechanical structures, direct     for this type of mechanism.
+control is possible by mapping joint values from one to the             Data-driven kinematic methods have been explored in many
+other. However, when their mechanical configurations differ,         previous studies. For instance, ANNs have been applied to
+it is necessary to translate joint space data from the master        solve forward kinematics for conventional Stewart platforms
+device into Cartesian coordinates for the slave robot through        (6-PUU) as demonstrated in [13] and [14], highlighting the
+a kinematic solution. This conversion becomes particularly           effectiveness of data-driven models in handling nonlinear and
+challenging when the master device is designed by a parallel         coupled systems. Similarly, [15] explored the use of ANNs
+mechanism, such as a Stewart platform, due to its non-linear         for kinematic modeling of a novel 3-PUU parallel manip-
+and highly coupled joint relationships.                              ulator. The forward kinematics problem of planar parallel
+   Stewart platform is a representative parallel mechanism that      robots was addressed by [16]–[18]. The ANN-based forward
+has been introduced by D. Stewart [1] initially. The Stewart         kinematics of a 3-PRS parallel robot was investigated in
+platform, consisting of six linear actuators with six prismatic      [19], demonstrating its approximation capabilities and real-
+and twelve universal joints (6-PUU) connecting a fixed base          time performance compared to traditional iterative methods. A
+to a movable top plate, enables six degrees of freedom (6-           forward kinematic solution for a redundantly actuated 2RPU-
+DoF) motion of the top plate through coordinated changes in          2SPR parallel manipulator was introduced in [20], employ-
+actuator lengths. This system is widely used in applications         ing backpropagation neural network optimization strategies.
+Similarly, an unsupervised neural network algorithm for real-         This paper is structured as follows: Section II introduces
+time forward kinematics analysis of under-constrained cable-       the structure and control system of the Stewart platform-based
+driven parallel robots was presented in [21]. Furthermore,         master device. Section III explains the data acquisition meth-
+artificial neural networks were applied in [22] to solve the       ods and the data-driven forward kinematics analysis approach.
+forward kinematics problem of a 3-RRS parallel mechanism,          Section IV presents experiments validating the accuracy of the
+showing that the neural network models outperform numerical        developed master device and the kinematic solution through
+approaches in terms of accuracy and consistency.                   real-time control of a 6-DoF robotic arm. Finally, Section V
+   While artificial neural networks (ANNs) have been widely        discusses the results and outlines future research directions.
+used for forward kinematics, alternative deep learning models
+have also been explored. For instance, Convolutional Neural             II. S TEWART P LATFORM BASED M ASTER D EVICE
+Networks (CNNs) were employed in [23] to extract forward           A. Design of Master Device by 6-RSS Stewart Platform
+kinematics for a 3-RRS robot, leveraging their ability to             As shown in Figure 1, the master device is composed of
+capture spatial dependencies. Similarly, a Long Short-Term         two parallel plates (a base plate and a top plate), six rotary
+Memory (LSTM) prediction model was utilized in [24] to             encoders, and a linkage system connecting them. The base
+address the forward kinematics problem of the Stewart plat-        plate forms the lower section of the platform, with six rotary
+form, benefiting from its capability to process sequential data.   encoders mounted on it. Each rotary encoder’s rotation axis
+More recently, a graph neural network-based approach was           is attached to one end of the first link, allowing the encoder
+introduced in [25], utilizing a graph distance matrix to enhance   to measure the angular displacement of the link. The other
+forward kinematics modeling for the Stewart platform. While        end of the first link is connected to a second link via a rod-
+these advanced models offer improved accuracy in some cases,       end bearing, and the distal end of this second link is similarly
+they often come at the cost of higher computational complex-       connected to the top plate with another rod-end bearing. This
+ity, making them less suitable for real-time applications.         structural configuration supports the top plate, enabling its con-
+   In contrast, this study presents a simple Artificial Neural     trol stick to move and adjust in six degrees of freedom. During
+Network (ANN)-based solution for the forward kinematics            operation, the six encoders capture the angular positions of the
+of a 6-RSS Stewart platform. By optimizing the network             first set of links, providing the data necessary for analyzing
+architecture and training it on high-quality data acquired via     and controlling the position and orientation of the top plate in
+an Optical Tracking System (OTS), our approach enables real-       Cartesian space. Each rotary encoder used in the system is an
+time estimation of the master device’s pose from six rotary        incremental encoder with a resolution of 500 P/R (E30S5-500-
+encoder measurements. This facilitates precise and responsive      6-L-5, Autonics Inc., Korea). Calibration is performed each
+position control of the slave robot in teleoperation scenarios.    time the master device controller is powered on, setting the
+The main contributions are summarized as follows:                  angle to 0 degrees when the first links are aligned horizontally
+   (1) ANN-based forward kinematics for 6-RSS Stewart plat-        with the base plate. To enhance the system’s stability and
+form: We propose the first known ANN-based method for solv-        functionality, torsion springs are mounted on the rotation axes
+ing the forward kinematics of the 6-RSS Stewart platform. Our      of the six rotary encoders. These springs prevent the first link
+data-driven model directly maps joint space (rotary encoder        from sagging under gravity, maintaining a horizontal position,
+angles) to Cartesian pose, achieving real-time performance         and also support the weight of the top plate via the second link.
+with high accuracy. A hyperparameter optimization strategy         This design helps ensure precise control and consistent motion
+is employed to further enhance training performance.               during operation in six degrees of freedom. Additionally, three
+   (2) High-quality training data via OTS: An Optical Tracking     centrally positioned coil springs further support the weight of
+System (OTS) is employed to collect accurate ground-truth          the top plate. These springs ensure that the control stick returns
+pose data in a direct and intuitive manner. This simple yet        to its central position when released by the user, improving the
+effective setup eliminates the need for idealized assumptions      stability and user experience of the device.
+or complex manual calibration procedures. As a result, the
+training dataset reliably captures the physical configuration of   B. Control Architecture for Master Device
+the master device, facilitating straightforward deployment and        Figure 2 illustrates the schematic structure of the master
+reproducibility in real-world scenarios.                           system, detailing the master device’s connection with the
+   (3) Experimental validation through teleoperation scenario:     master controller and the kinematic solver. When the control
+We validate our model through real-time position control of a      stick of the master device is manipulated, digital output signals
+6-DoF robotic arm. Unlike many previous studies that remain        from the six rotary encoders are simultaneously measured. To
+in simulation, we tested the proposed method in an actual tele-    transmit these signals to the kinematic solver in real-time, a
+operation setup using our custom-built 6-RSS Stewart platform      programmable interface board was developed using an STM32
+as the master device, paired with a slave robot operating in a     CPU (STMicroelectronics, Switzerland). This interface board
+separate coordinate system. Tracking error analysis confirms       collects the six encoder values from the master device in real-
+that the trained ANN model enables accurate and responsive         time, converts them into rotational angle values, and transmits
+control, demonstrating its feasibility for practical real-time     them via UDP at 1 kHz frequency to the robot control unit’s
+tele-robotic applications.                                         kinematic solver. This data processing system is defined as
+Fig. 1. Three-dimensional model and prototype of the 6-RSS Stewart
+platform-based master device. This figure displays the CAD model (left)
+and the prototype (right) of the 6-RSS Stewart Platform-based master device,   Fig. 3. Experimental setup for training data acquisition using an Optical
+designed for six degrees of freedom (6-DoF) motion                             Tracking System (OTS) with the master device. This setup depicts the
+                                                                               acquisition of training data, where an infrared marker on the master device’s
+                                                                               control stick is tracked by an OTS to provide ground truth pose data for ANN
+                                                                               training
+
+
+
+                                                                               tracking data with the encoder angles received simultaneously
+                                                                               from the master controller, storing these paired datasets in
+                                                                               memory. Once data collection is completed, the paired dataset
+                                                                               is saved to a file for further processing. The tracking results
+                                                                               from the OTS are represented as a 4x4 transformation matrix.
+                                                                               Note that the pose of the top plate’s center is determined by
+Fig. 2. Geometric structure of the master device and its connection with the   applying a pre-defined transformation between the marker and
+kinematic solver, illustrating the control architecture
+                                                                               the top plate’s center from a three-dimensional CAD model.
+                                                                               This approach enables indirect tracking of the top plate’s
+the Master Controller. The kinematic solver, which performs                    center by tracking the marker fixed to the control stick. The
+kinematic analysis using a ANN model, is implemented on a                      Cartesian coordinates of the top plate’s center are defined as
+computing platform equipped with an Intel i7 CPU, 16 GB                        ti = {x, y, z} for translation and ri = {rx , ry , rz } for rotation
+of RAM, and an NVIDIA 2080 Ti GPU. In this system, the                         by Euler angles.
+rotational angles measured by the rotary encoders of the master
+device are fed into a trained ANN model. The model computes                    B. ANN Model for Forward Kinematics
+and outputs the Cartesian coordinates that define the position                    The ANN model consists of an input layer with six nodes,
+and orientation of the center of the master device’s top plate.                two hidden layers, and an output layer with six nodes, as
+This real-time computation facilitates the translation of the                  illustrated in Figure 4. The six encoder angles (θ1 . . . θ6 ) from
+master device’s movements into precise control commands for                    the master device serve as the input, while the output consists
+the slave robot.                                                               of the Cartesian coordinate position (x, y, z) and orientation
+                                                                               (rx , ry , rz ) of the top plate’s center. Additional layers could
+           III. ANN- BASED F ORWARD K INEMATICS
+                                                                               lead to overfitting and prolonged training times, which were
+A. Data Acquisition for ANN Model Training                                     deliberately avoided to optimize model performance and effi-
+   The training dataset for ANN-based forward kinematics                       ciency.
+consists of angle data from the six encoders of the master                        To optimize the ANN for solving the forward kinematics
+device, along with simultaneously recorded position and ori-                   problem, we fixed some hyperparameters as listed in Table I.
+entation data of the top plate’s center obtained via OTS. The                  For the remaining hyperparameters—such as the number of
+encoder angles serve as input values for the ANN model, while                  hidden layer nodes, learning rate, and batch size—we applied
+the OTS data acts as labels for supervised learning. Figure 3                  the Asynchronous Successive Halving Algorithm (ASHA) [26]
+illustrates the configuration for data acquisition. An infrared                to efficiently search for optimal values. ASHA iteratively
+marker is attached to the control stick of the master device’s                 refines hyperparameters by evaluating multiple configurations
+top plate to capture its position and orientation. When the                    in parallel, allocating more resources to promising candidates
+user holds and moves the control stick, the OTS tracks the                     while discarding suboptimal ones early. This method enabled
+marker at a sampling rate of 100 Hz and transmits the data                     the model to identify the optimal learning rate and network
+to a data logger. The data logger synchronizes the marker                      structure while reducing computational cost. The search range
+                                                                             Fig. 5. Validation results of ANN-based forward kinematics, with position
+                                                                             and orientation errors visualized as bar-graph. This figure displays the ANN
+                                                                             model’s validation, showing positional (left) and orientation (right) errors
+
+
+
+
+Fig. 4. Architecture of the Artificial Neural Network (ANN) for forward                                  θ = arg min L(ŷ, y)                        (3)
+kinematics. This diagram illustrates the ANN model for forward kinematics,                                          θ
+featuring input (encoder angles), two hidden layers, and output (Cartesian      From the total dataset consisting n samples, 20% was
+pose)
+                                                                             allocated for test dataset, with 10% of the test dataset was
+                                                                             used for validation. The remaining 80% of the data was used
+and the optimized hyperparameters determined through ASHA                    to train the model. To evaluate the accuracy of the trained
+are summarized in Table II.                                                  model, the test dataset containing 2000 samples was fed into
+                                                                             the trained ANN model. For the same set of input angles,
+                            TABLE I                                          the difference between the input marker data (ground truth)
+            F IXED HYPERPARAMETERS FOR ANN TRAINING                          and the predicted pose data was plotted as shown in Figure
+                Types                        Parameters                      5. The positional and angular errors shown in Figure 5 are
+                Number of Hidden Layers      2                               summarized in Table III. The root mean square error (RMSE)
+                Activation Function          ReLU                            of Euclidean distance for position and orientation were 0.679
+                Optimizer                    Adam
+                Regularization               L2                              mm and 0.177 degrees, respectively.
+                Epoch                        100
+                                                                                                       TABLE III
+                                                                                 VALIDATION ERROR ANALYSIS OF POSITION AND ORIENTATION OF
+                                                                                                        F IGURE 5
+                          TABLE II
+  H YPERPARAMETER SEARCH RANGES AND OPTIMIZED VALUES USING                                    Type              Average / Std.    RMSE
+                           ASHA                                                                            x      0.354 ± 0.295
+                                                                                            Position
+                                                                                                            y     0.147 ± 0.128    0.679
+ Types                        Search Range         Optimized Parameters                      (mm)
+                                                                                                            z     0.343 ± 0.303
+ Learning Rate                1e−6 ∼ 1e−3          8.27e−6
+                                                                                                           rx     0.074 ± 0.063
+ Number of Neurons (N1)       128 ∼ 8192           4096                                    Orientation
+                                                                                                           ry     0.080 ± 0.067    0.177
+ Number of Neurons (N2)       128 ∼ 8192           1024                                     (degree)
+                                                                                                           rz     0.079 ± 0.069
+ Batch Size                   64 ∼ 512             128
+
+                                                                                The number of training datasets was set to 10,000, a deci-
+C. Training and Optimization of the ANN Model                                sion made after analyzing the validation errors as a function
+   The entire dataset, consisting of n samples for training, the             of dataset size. Figure 6 shows the relationship between the
+encoder angle values θi and the Cartesian coordinates of the                 training dataset size and validation errors for x, y, z, rx , ry , and
+master device’s position ti and orientation ri obtained via the              rz . The dataset size was incrementally increased from 1,000
+OTS, are normalized to values between 0 and 1 as θ̂, t̂i , and               to 60,000 samples, in steps of 1,000, and the corresponding
+r̂i respectively. The normalized encoder angles θ̂i and the                  validation errors were calculated and plotted. As evident in
+corresponding normalized outputs ŷi = [t̂i , r̂i ] are paired to            Figure 6, the validation errors for all parameters stabilize
+create a dataset D as,                                                       and no longer decrease significantly beyond a dataset size of
+                                                                             approximately 10,000. This suggests that increasing the dataset
+                          D = {(θ̂i , ŷi )}ni=1                      (1)    size beyond 10,000 samples provides negligible improvement
+                                                                             in model performance. Based on this result, the optimal dataset
+  To evaluate the model’s output, the mean squared error                     size for training the model was determined to be 10,000
+(MSE) loss function is defined as in Equation (2), and the                   samples.
+model is trained by minimizing this loss function as,
+                                                                             D. Real-time Robot Arm Control Using the Master Device
+                                      n
+                                1X                                             The trained ANN-based forward kinematics model (M ) is
+                     L(ŷ, y) =       (ŷi − yi )2                    (2)
+                                n i=1                                        then used to predict master device’s pose (t, r) from the input
+                                                                           Fig. 7. Experimental setup for evaluating motion tracking accuracy in a
+Fig. 6. Validation errors vs. number of training samples. Rapid decrease   teleoperation scenario, where arbitrary motions of the master device and the
+followed by saturation beyond 10,000 samples (red dashed line) for all     corresponding motions of the slave robot were tracked by the OTS
+translational and rotational axes
+
+
+encoder angles (θ). The encoder angle is fed into the ANN
+model in its normalized form (θ̂), and the model predicts the
+corresponding normalized translation and rotation (ŷ = [t̂, r̂])
+as follows:
+
+                       ŷ = f (θ̂; M ) = [t̂, r̂]                   (4)
+
+  Then, (ŷ) is de-normalized using the model’s range infor-
+mation, resulting in (y = [t, r]) as,
+
+               t = t̂ · (max(t) − min(t)) + min(t)
+                                                                    (5)    Fig. 8. Schematic diagram of the experimental setup for tracking master
+              r = r̂ · (max(r) − min(r)) + min(r)                          device manipulation and corresponding robot arm motion. This schematic
+                                                                           outlines the system: master encoder angles are processed by an ANN to drive
+   Here, (y = [t, r]) represents the pose of the top plate center          the robot arm’s TCP, while an OTS simultaneously tracks both for accuracy
+of the master device. This data is then transmitted to the robot           evaluation
+arm controller, where it serves as the tool center point (TCP)
+of the serial robot arm. Specifically, the robot arm controller
+stores the initial TCP (tinit , rinit ) as the reference when the
+system starts up. Each time a new pose (t, r) is received, the             Data Exchange (RTDE) interface was employed for its real-
+relative transformation is computed as,                                    time position control. Figure 8 illustrates the connection and
+                                                                           interaction between the components of the system. Specifi-
+                            ∆t = t − tinit ,
+                                                                    (6)    cally, when the master device was manipulated by the user,
+                           ∆r = r − rinit .                                the encoder angles received from the master device controller
+The transformation represents the required motion adjustment,              were transmitted to the kinematic solver in the robot control
+which is then sent as a control command for execution to up-               unit. The kinematic solver processed the six encoder angles
+date a new TCP. In the developed system, the aforementioned                using the trained ANN model to compute the pose of the
+processes are executed at a speed of 1 kHz. A detailed analysis            master device’s top plate center. The calculated pose was then
+of processing time is provided in Section IV.C.                            sent to the robot arm controller to move the TCP of the
+                                                                           robot arm accordingly. The OTS (Atracsys FTK500, Atracsys
+                 IV. E XPERIMENTAL R ESULTS                                Inc., Switzerland) was used to track the motions of both the
+                                                                           master device and the robot arm in real time. Passive infrared
+A. Experimental Setup for Performance Evaluation                           markers were mounted to the control stick of the master device
+  To evaluate position control accuracy during teleoperation               and the test tool attached the end joint of the robot arm.
+of serial robot arm by the developed master device, an                     Although the OTS tracked the markers attached to the master
+experimental system was configured as shown in Figure 7.                   device’s control stick and the robot arm’s tool, using marker
+The experimental setup consisted of the master device, master              pivoting, the system accurately determines the pose of the
+controller, control computer for the master device, OTS, data              master device’s top plate center and the robot arm’s TCP. This
+logger, and a serial robot arm. The UR 3e serial robot arm                 setup facilitated a direct comparison of the motions of the
+(Universal Robot Inc., USA) was used, and the Real-Time                    master device and robot arm.
+                                                                                Fig. 10. Bar graph representation for the quantitative analysis of motion
+                                                                                tracking errors of the experimental result of Figure 9. This bar graph provides
+                                                                                a quantitative statistical analysis of motion tracking errors, presenting RMSE
+                                                                                and other metrics for X, Y, Z axes, and total Euclidean displacement of the
+                                                                                experimental result of Figure 9
+
+
+                                                                                                          TABLE IV
+                                                                                 N UMERICAL RESULTS OF MOTION TRACKING ERRORS CORRESPONDING
+                                                                                                TO THE BAR GRAPH OF F IGURE 10
+
+                                                                                        Errors      X (mm)      Y (mm)       Z (mm)      Disp. (mm)
+                                                                                        Q1           -0.798      -0.496       -0.710       -0.794
+                                                                                        Median       0.352       -0.119       0.408         0.199
+                                                                                        Q3           1.403       0.235        1.464         1.056
+                                                                                        Min          -4.092      -1.575       -3.872       -3.560
+                                                                                        Max          4.644       1.317        4.636          3.79
+                                                                                        RMSE         1.753       0.613        1.594         1.414
+
+Fig. 9. Motion profiles generated by arbitrary manipulation of the master
+device (dotted lines) and the corresponding tracked trajectories of the robot
+arm’s TCP (solid lines). Subfigures (a), (b), and (c) show the displacement     as shown in Figure 11. Unlike the displacement-based tracking
+errors along the X, Y, and Z axes, respectively, while (d) presents the         accuracy evaluation as in Figure 9, a calibration process was
+Euclidean displacement error                                                    required to correct the misalignment between the reference
+                                                                                coordinate systems of the master device and the robot arm,
+                                                                                enabling accurate spatial motion comparison. A registration
+B. Motion Tracking Accuracy of Robot Arm Control
+                                                                                process was employed to compute the transformation matrix
+   In the experiments, user manipulated the master device’s                     (Trm ) between the master and robot coordinate systems.
+control stick in various directions and at different speeds.                    This process involved aligning the initial point data of both
+While the robot arm replicated these movements, the markers                     motion profiles to the origin and applying a hybrid approach
+on both devices were simultaneously recorded by OTS at 15                       combining Random Sample Consensus(RANSAC)-based ini-
+frames per second (FPS), capturing 2,000 data points over ap-                   tial registration with Iterative Closest Point(ICP)-based fine
+proximately 133 seconds. Figure 9 presents the displacements                    registration to compute (Trm ). Once (Trm ) was obtained,
+in each axis, where the dotted and solid lines represent the                    it was used to transform the robot motion data into the
+trajectories of the master device and robot arm, respectively.                  master coordinate system. This enabled a direct comparison of
+All displacements are calculated relative to the initial position               the robot’s three-dimensional motion with that of the master
+as the origin. Figures 9(a)–(c) show the displacements along                    device, from which experimental results showed a position
+the X-, Y -, and Z-axes, while Figure 9(d) illustrates the                      tracking error of 1.28 mm RMSE, confirming high accuracy
+Euclidean displacement of master device and robot arm from                      in three-dimensional motion tracking.
+their initial positions.
+   Figure 10 provides the complementary quantitative analysis                   C. Computational Efficiency and Processing Time Analysis
+of Figure 9, while Table IV presents the corresponding numer-                     To evaluate the real-time control performance of the robot
+ical values, indicating that the robot arm achieved an RMSE                     using the developed ANN-based forward kinematics, an exper-
+of 1.414 mm in tracking the arbitrary motion of the master                      iment was conducted to measure the time required for each
+device.                                                                         process: receiving encoder angle values from the master device
+   Three-dimensional motion trajectories of the master device                   (Proc. 1), computing the pose using the ANN model (Proc. 2),
+and the robot arm were also evaluated with 480 sample points                    and outputting motion data to the robot (Proc. 3). Figure 12
+                                                                            Additionally, spatial trajectory tracking tests indicated that the
+                                                                            system could reproduce the motion profile with an RMSE of
+                                                                            1.28 mm. Furthermore, processing time analysis showed that
+                                                                            the ANN-based solution operates at 1 kHz, ensuring real-time
+                                                                            performance.
+                                                                               The proposed ANN-based method proved especially useful
+                                                                            for the 6-RSS Stewart platform, where closed-form kinematic
+                                                                            solutions are not available. By directly mapping joint angles
+                                                                            to Cartesian coordinates, our approach overcomes the highly
+                                                                            coupled nonlinearities and avoids the iterative computations of
+                                                                            conventional methods, leading to significant improvements in
+                                                                            both efficiency and stability.
+                                                                               Additionally, in this study, an OTS was utilized to directly
+                                                                            measure the pose of the master device and construct a precise
+                                                                            dataset for training. This approach offers a significant advan-
+                                                                            tage over the traditional method of using inverse kinematics
+                                                                            to compute a dataset based on link lengths and corresponding
+                                                                            poses [27], as it more accurately reflects the actual structure
+Fig. 11. Three-dimensional motion tracking analysis between master device   of the robot hardware. By relying on real-world measure-
+and robot motion. This figure presents a 3D motion trajectory comparison
+between the master device and robot arm, utilizing 480 samples
+                                                                            ment data instead of theoretical calculations, the ANN model
+                                                                            can better capture mechanical imperfections such as joint
+                                                                            misalignments, assembly tolerances, and structural deviations,
+                                                                            ultimately enhancing the precision of kinematic predictions
+                                                                            of currently manufactured device. Finally, the ANN-based
+                                                                            model enables high-speed kinematic calculation, making it
+                                                                            particularly advantageous for robotic teleoperation, surgical
+                                                                            robotics, and haptic feedback systems. Despite its advantages,
+                                                                            our approach has some limitations. The accuracy of the ANN
+                                                                            model is dependent on the quality and quantity of training
+                                                                            data, meaning that any sensor noise or inaccuracies during
+                                                                            OTS data acquisition could introduce errors into the model’s
+                                                                            predictions. Additionally, while the ANN model is optimized
+                                                                            for the 6-RSS Stewart platform, it may not generalize to other
+Fig. 12. Processing time for ANN-based forward kinematics and robot         Stewart platform configurations without additional retraining.
+control, which illustrates the computational efficiency of the ANN-based
+system, demonstrating 1 kHz real-time performance for robot control         Developing a more adaptable model would enhance its usabil-
+                                                                            ity across different robotic systems.
+                                                                               To further advance the applicability of the proposed ANN-
+shows the recorded times for each process, measured over                    based kinematics method, several research directions can be
+5,000 iterations. The average times for Proc. 1, Proc. 2, and               explored. Developing a more generalized ANN model that
+Proc. 3 were found to be 0.65 ms, 0.29 ms, and 0.06 ms,                     can handle different parallel mechanism configurations without
+respectively, with the total time for completing one cycle                  the need for extensive retraining would significantly enhance
+averaging 0.99 ms. These results demonstrate that the proposed              its versatility. Additionally, integrating additional sensor data,
+system can produce robot control signals at a real-time rate                such as force-torque sensors or IMUs, could improve ro-
+of 1 kHz. This confirms that the developed system is capable                bustness against external disturbances and enhance control
+enough to be utilized for real-time position control of the robot           accuracy. Moreover, implementing online learning techniques
+in practical applications.                                                  (e.g., reinforcement learning or continual learning) would
+                                                                            allow the ANN model to dynamically adapt to new operating
+                          V. D ISCUSSION                                    conditions and variations in the mechanical system.
+   In this study, we developed an ANN-based forward kinemat-
+ics solution for a 6-RSS Stewart platform-based master device.                                    VI. C ONCLUSION
+The proposed ANN model effectively predicts the position and                   This study introduced an ANN-based approach for solving
+orientation of the master device’s top plate based on rotary                the forward kinematics of a 6-RSS Stewart platform-based
+encoder values, enabling real-time control of a robotic system.             master device, ensuring efficient real-time analysis. OTS was
+Experimental results demonstrated that the system achieved a                employed to acquire labeled training data, accurately reflecting
+position tracking accuracy of 1.414 mm RMSE, confirming its                 the physical assembly without additional adjustments or ideal-
+effectiveness for precise control in teleoperation applications.            ized assumptions. Hyperparameter optimization was applied to
+determine the optimal training conditions for forward kinemat-                      [15] Y. Khattab, I. F. Zidane, M. El-Habrouk, and S. Rezeka, “Solving
+ics of the 6-RSS Stewart platform with the collected data. The                          Kinematics of a Parallel Manipulator Using Artificial Neural Networks,”
+                                                                                        31st Int. Conf. Comput. Theory Appl. ICCTA 2021 - Proc., pp. 84–89,
+trained ANN model was validated through the teleoperation                               2021, doi: 10.1109/ICCTA54562.2021.9916234.
+scenario by real-time position control of a 6-DoF robotic arm,                      [16] A. H. E. Ezzat A Showaib, “Artificial Neural Network Based Forward
+with motion tracking error analysis confirming its accuracy                             Kinematics Solution for Planar Parallel Manipulators Passing through
+                                                                                        Singular Configuration,” Adv. Robot. Autom., vol. 02, no. 02, 2013, doi:
+and feasibility. The ANN model effectively addressed the chal-                          10.4172/2168-9695.1000106.
+lenges associated with solving non-linear kinematic problems,                       [17] F. Tavassolian, H. Khotanlou, and P. Varshovi-Jaghargh, “Forward
+such as those in the 6-RSS Stewart platform, providing a                                Kinematics Analysis of a 3-PRR Planer Parallel Robot Using a Com-
+                                                                                        bined Method Based on the Neural Network,” Proceedings of the 2018
+robust alternative for applications requiring precise and rapid                         8th International Conference on Computer and Knowledge Engineering
+kinematic computation. As this method effectively solves the                            (ICCKE), pp. 320–325, Oct. 2018.
+forward kinematics problem for a complex structure of the                           [18] J. F. Garcı́a-Samartı́n and A. Barrientos, “Kinematic Modelling of
+                                                                                        a 3RRR Planar Parallel Robot Using Genetic Algorithms and Neural
+6-RSS Stewart platform, it can be extended to handle even                               Networks,” Machines, vol. 11, no. 10, pp. 1–26, 2023, doi: 10.3390/ma-
+more intricate mechanisms, contributing to the advancement                              chines11100952.
+of AI-driven kinematic modeling.                                                    [19] A. Zubizarreta, M. Larrea, E. Irigoyen, I. Cabanes, and E. Portillo, “Real
+                                                                                        time direct kinematic problem computation of the 3PRS robot using
+                                                                                        neural networks,” Neurocomputing, vol. 271, pp. 104–114, 2018, doi:
+                         ACKNOWLEDGMENTS                                                10.1016/j.neucom.2017.02.098.
+                                                                                    [20] H. Zhang, H. Fang, D. Zhang, X. Luo, and Q. Zou, “Forward
+                                                                                        kinematics and workspace determination of a novel redundantly actu-
+                               R EFERENCES                                              ated parallel manipulator,” Int. J. Aerosp. Eng., vol. 2019, 2019, doi:
+                                                                                        10.1155/2019/4769174.
+[1] D. Stewart, “A Platform with Six Degrees of Freedom,” Proceedings of            [21] U. A. Mishra and S. Caro, “Forward Kinematics for Suspended Under-
+    the Institution of Mechanical Engineers, vol. 180, no. 1, pp. 371–386,              Actuated Cable-Driven Parallel Robots with Elastic Cables: A Neu-
+    1965, doi: 10.1243/pime.proc.1965.180.029.02.                                       ral Network Approach,” J. Mech. Robot., vol. 14, no. 4, 2022, doi:
+[2] R. V. Virgil Petrescu, R. Aversa, A. Apicella, S. Kozaitis, T. Abu-                 10.1115/1.4054407.
+    Lebdeh, and F. I. T. Petrescu, “Inverse Kinematics of a Stewart Plat-           [22] A. Prado, H. Zhang, and S. K. Agrawal, “Artificial Neural Networks to
+    form,” J. Mechatronics Robot., vol. 2, no. 1, pp. 45–59, 2018, doi:                 Solve Forward Kinematics of a Wearable Parallel Robot with Semi-rigid
+    10.3844/jmrsp.2018.45.59.                                                           Links,” Proc. - IEEE Int. Conf. Robot. Autom., vol. 2021-May, no. Icra,
+[3] S. Shim, S.-Y. Lee, S.-J. Joo, and J. Seo, “Denavit-Hartenberg Notation-            pp. 14524–14530, 2021, doi: 10.1109/ICRA48506.2021.9561246.
+    based Kinematic Constraint Equations for Forward Kinematics of the 3-6          [23] S. A. A. Moosavian, O. Mahdizadeh, S. Hallajian, S. Ashrafi, M.
+    Stewart Platform,” Journal of Mechanisms and Robotics, vol. 14, no. 5,              Jamali, and V. Akbari, “Forward Kinematics Development of a 3-
+    Feb. 2022, doi: 10.1115/1.4053822.                                                  RRS Parallel Manipulator for Real-Time Control,” International Con-
+[4] C. I. Huang, C. F. Chang, M. Y. Yu, and L. C. Fu, “Sliding-mode tracking            ference on Robotics and Mechatronics, pp. 459–465, Nov. 2022, doi:
+    control of the stewart platform,” 2004 5th Asian Control Conf., vol. 1,             10.1109/ICRoM57054.2022.10025318.
+    no. August 2004, pp. 562–569, 2004, doi: 10.1109/ASCC.2004.184819.              [24] Q. Wang, M. Xue, J. Su, Q. Liu, B. Chen, and M. Fang, “For-
+[5] Q. Zhu and Z. Zhang, “An Efficient Numerical Method for Forward                     ward Kinematics Solution for Stewart and TBBP: A Neural Net-
+    Kinematics of Parallel Robots,” IEEE Access, vol. 7, pp. 128758–128766,             work Approach Based on LSTM,” pp. 227–235, Oct. 2022, doi:
+    2019, doi: 10.1109/ACCESS.2019.2940064.                                             10.1109/RCAE56054.2022.9996010.
+[6] D. Jakobović and L. Jelenković, “The forward and inverse kinematics           [25] H. Zhu, W. Xu, J. Huang, and J. Li, “DisGNet: A Distance Graph Neural
+    problems for stewart parallel mechanisms,” CIM 2002 Comput. Integr.                 Network for Forward Kinematics Learning of Gough-Stewart Platform,”
+    Manuf. High Speed Mach. - 8th Int. Sci. Conf. Prod. Eng., 2002.                     arXiv.Org, p. abs/2402.09077, 2024, doi: 10.48550/arxiv.2402.09077.
+[7] C. C. Nguyen, S. S. Antrazi, Z.-L. Zhou, and C. E. Campbell, “Analysis          [26] L. Li, K. Jamieson, A. Rostamizadeh, E. Gonina, M. Hardt, B. Recht,
+    and implementation of a 6 DOF Stewart Platform-based robotic wrist,”                and A. Talwalkar, ”A system for massively parallel hyperparameter
+    Computers & Electrical Engineering, vol. 17, no. 3, pp. 191–203, Jul.               tuning,” arXiv preprint arXiv:1810.05934, 2018.
+    1991, doi: 10.1016/0045-7906(91)90035-X.                                        [27] D. S. Chauhan and P. R. Vundavilli, “Forward Kinematics of the
+[8] N., Grishin., Kirill, Dmitrievich, Bukharov., Larisa, Rybak., V., Zhuk.             Stewart Parallel Manipulator Using Machine Learning,” International
+    (2023). ”Numerical method for solving the forward kinematics to control             Journal of Computational Methods, vol. 19, no. 08, Mar. 2022, doi:
+    the Gough-Stewart platform”. Nucleation and Atmospheric Aerosols, doi:              10.1142/s0219876221420093.
+    10.1063/5.0111959
+[9] A. Morell, M. Tarokh, and L. Acosta, “Solving the forward kine-
+    matics problem in parallel robots using Support Vector Regression,”
+    Eng. Appl. Artif. Intell., vol. 26, no. 7, pp. 1698–1706, 2013, doi:
+    10.1016/j.engappai.2013.03.011.
+[10] A. A. Yagur and A. A. Belov, “Inverse kinematics analysis and path
+    planning for 6DOF RSS parallel manipulator,” 2018 22nd Int. Conf. Syst.
+    Theory, Control Comput. ICSTCC 2018 - Proc., pp. 789–793, 2018, doi:
+    10.1109/ICSTCC.2018.8540728.
+[11] F. Szufnarowski, “Stewart platform with fixed rotary actuators : a low
+    cost design study,” Fac. Technol. Bielefeld Univ. Ger., pp. 1–11, 2013,
+    doi: 10.1016/S0094-114X(99)00006-3.
+[12] K. Tanakitkorn, “Design Optimisation of a 6-RSS Parallel Manipulator
+    via Surrogate Modelling,” vol. 501, no. 1, p. 012020, Apr. 2019, doi:
+    10.1088/1757-899X/501/1/012020.
+[13] P. J. Parikh and S. S. Y. Lam, “A hybrid strategy to solve the forward
+    kinematics problem in parallel manipulators,” IEEE Trans. Robot., vol.
+    21, no. 1, pp. 18–25, 2005, doi: 10.1109/TRO.2004.833801.
+[14] P. J. Parikh and S. S. Lam, “Solving the forward kinematics problem in
+    parallel manipulators using an iterative artificial neural network strategy,”
+    Int. J. Adv. Manuf. Technol., vol. 40, no. 5–6, pp. 595–606, 2009, doi:
+    10.1007/s00170-007-1360-x.
+

@@ -1,0 +1,65 @@
+8                                     Joonho Seo, Seongbo Shim, and Deokgi Jeong
+
+
+the current offline learning framework to online learning     Funding
+would allow the model to be continuously updated in real         This research was supported by a grant of Korea Health
+time based on data collection during robot operation [24].    Technology R&D Project through the Korea Health In-
+Beyond IK, the system could also be expanded to learn dy-     dustry Development Institute (KHIDI) funded by the Min-
+namic properties by force sensing [25], enabling advanced     istry of Health & Welfare of Korea (HR22C130202), and
+control strategies such as haptic feedback or impedance       Technology development Program (RS-2024-00512145)
+control. While this study focused on solving the inverse      funded by the Ministry of SMEs and Startups (MSS, Ko-
+kinematics (IK), forward kinematics (FK) for the 6-RSS        rea).
+Stewart platform is known to be more challenging, as it
+involves solving high-degree non-linear polynomial equa-
+tions and lacks a general closed-form solution [26]. An FK                          REFERENCES
+solution becomes necessary when using a 6-RSS Stewart
+                                                               [1] D. Stewart, “A platform with six degrees of freedom,” Pro-
+platform as a leader device, where joint angles are pro-           ceedings of the Institution of Mechanical Engineers, vol.
+vided and the corresponding pose of the moving platform            180, no. 1, pp. 371–386, 1965.
+should be predicted. In such cases, the proposed end-to-
+end learning framework could be effectively applied as         [2] D. Balaban, J. Cooper, and E. Komendera, “Inverse kine-
+                                                                   matics and sensitivity minimization of an n-Stack Stewart
+well.
+                                                                   platform,” Proc. of the IEEE/RSJ International Conference
+                                                                   on Intelligent Robots and Systems (IROS), pp. 6794–6799,
+                  5.   CONCLUSION                                  2019.
+                                                               [3] R. V. V. Petrescu, R. Aversa, A. Apicella, S. Kozaitis, T.
+   In this study, we proposed an end-to-end learning               Abu-Lebdeh, and F. I. T. Petrescu, “Inverse kinematics of a
+framework for the inverse kinematics (IK) of a 6-RSS               Stewart platform,” Journal of Mechatronics and Robotics,
+Stewart platform. Training data were acquired via a                vol. 2, no. 1, pp. 45–59, 2018.
+‘teaching-and-playback’ process, ensuring that the model       [4] F. Liang, S. Tan, X. Zhao, J. Fan, Z. Lin, Z. Shi, and X.
+learned from the robot’s active dynamic behavior. To               Kang, “Kinematics and dynamics simulation of a Stew-
+learn the non-linear kinematic relationship while preserv-         art platform,” Journal of Physics: Conference Series, vol.
+ing temporal motion characteristics, a hybrid ANN archi-           2333, no. 1, 2022.
+tecture integrating LSTM and DNN was developed. The            [5] T. Ono, R. Eto, J. Yamakawa, and H. Murakami, “Analysis
+trained model achieved precise IK estimation with an av-           and control of a Stewart platform as base motion compen-
+erage angular error of approximately 0.4◦ . Notably, the           sators – Part I: Kinematics using moving frames,” Nonlin-
+system exhibited tracking performance statistically com-           ear Dynamics, vol. 107, no. 1, pp. 51–76, 2022.
+parable to the analytical solution, maintaining a marginal     [6] A. Fijany and G. Fried, “Novel algorithms for computa-
+RMSE deviation of approximately 2% at a processing                 tion of inverse kinematics and inverse dynamics of Gough-
+speed of 44 Hz. Furthermore, beyond standard accuracy,             Stewart platform,” Proc. of the IEEE/RSJ International
+the proposed method demonstrated superior robustness               Conference on Intelligent Robots and Systems (IROS), pp.
+under fault conditions where deriving an accurate analyti-         1573–1580, 2012.
+cal model is often challenging/impractical. Consequently,      [7] F. Szufnarowski, “Stewart platform with fixed rotary ac-
+this approach presents a practical alternative for control-        tuators: A low cost design study,” Faculty of Technology,
+ling complex robotic systems subject to modeling uncer-            Bielefeld University, 2013.
+tainties.
+                                                               [8] A. A. Yagur and A. A. Belov, “Inverse kinematics anal-
+                                                                   ysis and path planning for 6DOF RSS parallel manipula-
+                                                                   tor,” Proc. of the 22nd International Conference on System
+                   DECLARATIONS
+                                                                   Theory, Control and Computing (ICSTCC), pp. 789–793,
+                                                                   2018.
+Conflict of Interest
+                                                               [9] V. Patel, S. Krishnan, A. Goncalves, and K. Goldberg,
+   The authors declare that there is no competing financial
+                                                                   “SPRK: A low-cost Stewart platform for motion study in
+interest or personal relationship that could have appeared         surgical robotics,” International Symposium on Medical
+to influence the work reported in this paper.                      Robotics (ISMR), pp. 1–6, 2018.
+                                                              [10] J. Lu, T. Zou, and X. Jiang, “A neural network based ap-
+Authors’ Contributions                                             proach to inverse kinematics problem for general six-axis
+  Joonho Seo: Conceptualization, Methodology, Soft-                robots,” Sensors, vol. 22, no. 22, pp. 1–19, 2022.
+ware, Writing—Original Draft. Seongbo Shim and De-            [11] Y. Bai, M. Luo, and F. Pang, “An algorithm for solving
+okgi Jeong: Data Curation and Writing—Review & Edit-               robot inverse kinematics based on FOA optimized BP neu-
+ing.                                                               ral network,” Applied Sciences, vol. 11, no. 15, 2021.
+

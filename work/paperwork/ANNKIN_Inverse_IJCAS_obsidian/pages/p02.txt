@@ -1,0 +1,75 @@
+2                                       Joonho Seo, Seongbo Shim, and Deokgi Jeong
+
+
+poses is provided, the trained model predicts the corre-
+sponding joint angles to control the motors.
+
+   Several studies have applied similar AI-based kinematic
+analysis strategies to various robot structures. In partic-
+ular, artificial neural network (ANN)-based IK solutions
+for 6-degree-of-freedom (DoF) serial robotic arms have
+been introduced [10–14], and several approaches have
+also been proposed to address the IK of high-DoF re-
+dundant manipulators [15, 16]. Additionally, Bai [17] and
+Chen [18] presented a hybrid approach combining geo-
+                                                                 Fig. 1. 6-RSS Stewart Platform. (a) Schematic of the 6-
+metric models with ANNs to improve the stability of the
+                                                                         RSS robot and design parameters for closed-form
+conventional IK solutions. Semwal [19] applied and com-
+                                                                         IK. (b) 3D CAD prototype model.
+pared multiple data-driven kinematic solutions to IK prob-
+lems, and discussed the performance difference among
+the algorithms. As for the parallel mechanisms, Mishra                      2.   MATERIAL AND METHODS
+[20] demonstrated that an ANN-based IK model can ef-
+fectively handle the system’s non-linearities with stabil-       2.1. Kinematic modeling of the 6-RSS Stewart plat-
+                                                                        form
+ity. Moreover, Toquica [21] applied an ANN-based deep
+learning model to solve the IK of an industrial parallel            As shown in Fig. 1, the 6-RSS parallel mechanism con-
+robot and validated its performance on a real robotic plat-      sists of six rotary motors mounted on the base frame, each
+form, showing that data-driven models could outperform           connected to a link, which in turn supports the top plate via
+analytical IK methods.                                           six connecting rods. Each link is connected at both ends
+                                                                 through a total of twelve rod-end bearing joints. Fig. 1(a)
+   This study also presents a data-driven IK solution utiliz-    illustrates the schematic design of the 6-RSS Stewart plat-
+ing ANN, however, we present several key distinctive and         form, highlighting its kinematic structure as well as the
+novel contribution points compared to previous research          key design parameters defined to solve the closed-form
+as follows,                                                      IK. Fig. 1(b) presents a 3D CAD model of the 6-RSS plat-
+                                                                 form as an actual prototype robot for this study.
+  First, to the best of our knowledge, this is the first study
+to solve the IK of a 6-RSS Stewart platform using an
+                                                                 2.2. Closed-form IK solution
+end-to-end, data-driven learning approach trained on real-
+world demonstration data, without relying on analytical             The closed-form IK solution for the 6-RSS Stewart plat-
+kinematic formulations or simulated models.                      form is described in detail in [7] and [9]. Here, we sum-
+                                                                 marize the key equations. The desired pose of the platform
+   Second, by collecting demonstration data directly from        can be represented in terms of qi of the top plate, which
+a physical prototype using an optical tracking system            are relative coordinates from the base frame. The interme-
+(OTS), the proposed approach implicitly captures real-           diate parameters L1,i , L2,i , L3,i as equations of (1)–(3) can
+world dynamics, mechanical imperfections, and joint-             be derived using the geometric relationship between the
+level physical constraints, which are difficult to model ac-     motor pi and the angles φi . Based on this, the rotation an-
+curately using idealized kinematic parameters.                   gle θi for each motor can be calculated by (4). The design
+                                                                 parameters for these calculations can be obtained from the
+   Third, to effectively learn from time-continuous mo-
+                                                                 3D CAD model as shown in Fig. 1(b). The parameters are
+tion data, a hybrid LSTM–DNN architecture is employed,
+                                                                 listed in Table 1, which will be used in Section 3 to im-
+where the LSTM captures the temporal and continuity of
+                                                                 plement the closed-form IK-based position control of the
+robot motion, while the DNN models the highly nonlinear
+                                                                 robotic platform.
+mapping between joint space and task space.
+
+   This paper is structured as follows: Section II in-               L1,i = 2r(pz,i − qz,i ),                                        (1)
+troduces the kinematic modeling of the 6-RSS Stewart                 L2,i = 2r [sin(φi )(px,i − qx,i ) − cos(φi )(py,i − qy,i )] ,
+platform-based robot and its conventional closed-form IK.                                                                            (2)
+The LSTM-based IK is introduced along with the process               L3,i = h2i − l 2 + r2 ,                                         (3)
+of data acquisition, model design, and training. Section III                                       
+presents experiments to compare the tracking accuracy for
+                                                                                                             
+                                                                                     ±L3,i              L2,i
+the desired input motion using closed-form IK and LSTM-              θi = arcsin  q          − arctan          .                    (4)
+                                                                                     2 + L2
+                                                                                    L1,i                 L1,i
+based IK. Finally, Section IV discusses the experimental                                  2,i
+
+results and future research directions.
+

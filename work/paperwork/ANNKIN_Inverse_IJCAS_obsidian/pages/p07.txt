@@ -1,0 +1,59 @@
+                            End-to-End Inverse Kinematics Framework for 6-RSS Stewart Platform                              7
+
+
+                                                                 driven alternative to analytical IK methods.
+                                                                    Furthermore, an additional experiment under inten-
+                                                                 tional fault conditions showed that the LSTM-based
+                                                                 method maintained accurate position control by learning
+                                                                 from the altered behavior. Such robustness is difficult to
+                                                                 achieve with closed-form IK, which relies strictly on ide-
+                                                                 alized models.
+                                                                    Additionally, the results of processing time showed that
+                                                                 the system using LSTM-based IK solution is capable of
+                                                                 controlling the robot in real time at 44 Hz. In addition, the
+                                                                 LSTM-based IK model demonstrated computation speeds
+                                                                 very close to those of the closed-form IK solution, sug-
+                                                                 gesting that with a higher-performance GPU, the LSTM-
+                                                                 based IK method could achieve faster computation speeds
+                                                                 than the closed-form solution.
+                                                                    The proposed method requires a sufficient amount of
+                                                                 training data to ensure high accuracy. In this study, 28,800
+                                                                 point samples were used for training. However, it remains
+                                                                 necessary to investigate the minimum number of train-
+                                                                 ing samples to maintain performance. Additionally, if the
+                                                                 training dataset does not sufficiently cover the full range
+                                                                 of poses in the robot’s workspace, this approach may pro-
+                                                                 duce less accurate predictions in untrained regions.
+                                                                    A key advantage of our data acquisition method is the
+                                                                 use of the playback process. If data were collected solely
+                                                                 during manual manipulation (passive mode), the mechan-
+                                                                 ical behavior of the joints, such as the direction of fric-
+                                                                 tion and gear backlash, might differ from that during
+Fig. 9. Results of position tracking under fault conditions      motor-driven operation. By collecting the final training
+        (a) Scenario 1: encoder gain error, (b) Scenario 2:      dataset while the robot actively replayed the trajectories,
+        structural asymmetry.                                    our model could implicitly learn the exact kinematic map-
+                                                                 ping including the system’s actual hysteresis and stiffness
+                                                                 characteristics.
+                                                                    Furthermore, this approach is particularly effective for
+                                                                 systems with complex kinematics or redundant degrees of
+                                                                 freedom, where deriving analytical IK solutions is chal-
+                                                                 lenging. Moreover, the model can inherently learn me-
+                                                                 chanical variations or asymmetric behavior, allowing it to
+                                                                 handle correction factors automatically, unlike analytical
+                                                                 methods that often require explicit calibration. These ad-
+                                                                 vantages suggest that the proposed method can serve as a
+Fig. 10. Recorded processing time for the position control       robust IK solution in the presence of modeling uncertain-
+         by each IK solution.                                    ties.
+                                                                    In this study, we evaluated LSTM-based IK model,
+                    4.   DISCUSSION                              however, as a future work, model architecture can be im-
+                                                                 proved to achieve better performance. For example, while
+   In the tracking accuracy experiments, the LSTM-based          the current model is based on time-series learning using
+IK method demonstrated tracking performance highly               only past input data, combining BiLSTM with a DNN
+comparable to the closed-form IK solution. As the geo-           [23] could enable the model to utilize both past and fu-
+metric parameters of the closed-form IK solution were ex-        ture information in the input sequence, resembling a feed-
+tensively optimized in our prior studies, it closely matches     forward control. Additionally, a hybrid IK approach such
+the actual 6-RSS Stewart platform used in the experi-            as incorporating the outputs of traditional IK algorithms
+ments. Therefore, the fact that the LSTM-based approach          into the training of neural networks [17] could allow the
+achieved performance within only 2% of the closed-form           two methods to complement each other, resulting in en-
+solution highlights its strong potential as a practical, data-   hanced accuracy and robustness. Furthermore, extending
+

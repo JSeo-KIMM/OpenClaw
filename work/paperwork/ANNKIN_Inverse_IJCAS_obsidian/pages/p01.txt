@@ -1,0 +1,62 @@
+International Journal of Control, Automation, and Systems VV(X) (YYYY) 1-9                      ISSN:1598-6446 eISSN:2005-4092
+http://dx.doi.org/10.1007/s12555-xxx-xxxx-x                                                        http://www.springer.com/12555
+
+End-to-End Inverse Kinematics Framework for 6-RSS Stewart Platform
+using LSTM-based Deep Neural Network
+Joonho Seo*, Seongbo Shim, and Deokgi Jeong
+
+
+   Abstract: This paper proposes an end-to-end inverse kinematics (IK) solution using an Artificial Neural Network
+   (ANN) for position control of a 6-RSS Stewart platform. It aims to compute the joint angles of six rotary motors to
+   achieve the desired platform pose. To this end, a dataset is collected by tracking the platform pose with an Optical
+   Tracking System (OTS) while simultaneously measuring joint angles. To learn the non-linear relationship between
+   the desired pose and joint angles while preserving the temporal continuity of robot motion, a hybrid architecture
+   combining a Long Short-Term Memory (LSTM) network and a Deep Neural Network (DNN) was proposed. The
+   conventional closed-form IK solution is also implemented for comparison. Given the same input trajectories, the
+   proposed IK solution achieved a tracking performance comparable to the closed-form solution, maintaining an
+   RMSE deviation within 2% of the analytical baseline. Moreover, we demonstrated the robustness of the proposed
+   IK solution by validating it under fault conditions where the closed-form solution is unable to adapt. The results
+   suggest that the proposed learning-based IK solution is a suitable alternative for the kinematic control of complex
+   mechanisms, maintaining high accuracy even in the presence of modeling uncertainties.
+
+   Keywords: 6-RSS Stewart platform, deep neural network, end-to-end learning, inverse kinematics, LSTM.
+
+
+
+                 1.   INTRODUCTION                                  6-RSS configuration, which consists of six revolute (R)
+                                                                    joints and twelve spherical (S) joints forming six kine-
+   A precise solution for interpreting the robot’s inverse          matic chains connecting the moving platform to the base
+kinematics (IK) is essential for accurate position control,         frame. Solving the IK problem in this configuration re-
+as it computes the joint-space configuration correspond-            quires satisfying closed-loop constraints to compute the
+ing to a desired end-effector pose in Cartesian space. A            joint angles corresponding to a given platform pose. Al-
+well-defined IK formulation ensures both precision and              though more complex than linear actuator based Stewart
+repeatability in robot motion. However, discrepancies be-           Platform, closed-form IK solutions for the 6-RSS mecha-
+tween the physical system and the kinematic model of                nism have also been investigated in some previous studies
+the design parameters, mechanical errors due to joint mis-          [7–9].
+alignments, or component wear can lead to inaccuracies in              Unlike the closed-form IK solution, this study pro-
+the actual end-effector pose. Additionally, when the me-            poses a data-driven IK approach that learns the non-linear
+chanical structure becomes highly complex, deriving an              mapping between the moving platform’s pose and the
+accurate analytical IK model is often challenging; without          joint angles through offline training. The trained model
+an accurate IK solution, precise position control becomes           is then used in the online phase to predict joint angles
+infeasible.                                                         in real time. For offline data collection, a ‘teaching-and-
+   In the case of a robot structure based on Stewart plat-          playback’ strategy is employed. Initially, a human opera-
+form [1], a type of parallel robot known for its high stiff-        tor manually move the robot in passive (torque-off) mode
+ness and accuracy, the IK problem refers to determining             to define arbitrary trajectories. Subsequently, the robot re-
+the lengths of the supporting legs, given the desired po-           plays these motions, during which the pose of the mov-
+sition and orientation of the moving platform. In such de-          ing platform is measured using an optical tracking sys-
+sign, closed-form IK solutions have been extensively stud-          tem (OTS), while the corresponding joint angles are si-
+ied for conventional linear actuators based Stewart plat-           multaneously recorded from the encoders. These pose–
+forms [2–6]. In contrast, the parallel mechanism consid-            angle data pairs form the training dataset for the neural
+ered in this study adopts a different architecture, namely a        network. In the online phase, when a sequence of target
+
+Manuscript received XX XX, 2026; revised XX XX, 2026; accepted XX XX, 2026. Recommended by Associate Editor XX under the
+direction of Editor XX.
+
+Joonho Seo, Seongbo Shim, and Deokgi Jeong are with the Department of Robot Application, Korea Institute of Machinery and Materials,
+330 Techno Sunhwan-ro, Daegu 42724, Korea (e-mails: jhseo@kimm.re.kr, sbshim@kimm.re.kr, deokgi@kimm.re.kr).
+* Corresponding author.
+
+
+
+                                                                                                 ©ICROS, KIEE and Springer 2026
+

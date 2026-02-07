@@ -1,0 +1,63 @@
+                                                                             Fig. 5. Validation results of ANN-based forward kinematics, with position
+                                                                             and orientation errors visualized as bar-graph. This figure displays the ANN
+                                                                             model’s validation, showing positional (left) and orientation (right) errors
+
+
+
+
+Fig. 4. Architecture of the Artificial Neural Network (ANN) for forward                                  θ = arg min L(ŷ, y)                        (3)
+kinematics. This diagram illustrates the ANN model for forward kinematics,                                          θ
+featuring input (encoder angles), two hidden layers, and output (Cartesian      From the total dataset consisting n samples, 20% was
+pose)
+                                                                             allocated for test dataset, with 10% of the test dataset was
+                                                                             used for validation. The remaining 80% of the data was used
+and the optimized hyperparameters determined through ASHA                    to train the model. To evaluate the accuracy of the trained
+are summarized in Table II.                                                  model, the test dataset containing 2000 samples was fed into
+                                                                             the trained ANN model. For the same set of input angles,
+                            TABLE I                                          the difference between the input marker data (ground truth)
+            F IXED HYPERPARAMETERS FOR ANN TRAINING                          and the predicted pose data was plotted as shown in Figure
+                Types                        Parameters                      5. The positional and angular errors shown in Figure 5 are
+                Number of Hidden Layers      2                               summarized in Table III. The root mean square error (RMSE)
+                Activation Function          ReLU                            of Euclidean distance for position and orientation were 0.679
+                Optimizer                    Adam
+                Regularization               L2                              mm and 0.177 degrees, respectively.
+                Epoch                        100
+                                                                                                       TABLE III
+                                                                                 VALIDATION ERROR ANALYSIS OF POSITION AND ORIENTATION OF
+                                                                                                        F IGURE 5
+                          TABLE II
+  H YPERPARAMETER SEARCH RANGES AND OPTIMIZED VALUES USING                                    Type              Average / Std.    RMSE
+                           ASHA                                                                            x      0.354 ± 0.295
+                                                                                            Position
+                                                                                                            y     0.147 ± 0.128    0.679
+ Types                        Search Range         Optimized Parameters                      (mm)
+                                                                                                            z     0.343 ± 0.303
+ Learning Rate                1e−6 ∼ 1e−3          8.27e−6
+                                                                                                           rx     0.074 ± 0.063
+ Number of Neurons (N1)       128 ∼ 8192           4096                                    Orientation
+                                                                                                           ry     0.080 ± 0.067    0.177
+ Number of Neurons (N2)       128 ∼ 8192           1024                                     (degree)
+                                                                                                           rz     0.079 ± 0.069
+ Batch Size                   64 ∼ 512             128
+
+                                                                                The number of training datasets was set to 10,000, a deci-
+C. Training and Optimization of the ANN Model                                sion made after analyzing the validation errors as a function
+   The entire dataset, consisting of n samples for training, the             of dataset size. Figure 6 shows the relationship between the
+encoder angle values θi and the Cartesian coordinates of the                 training dataset size and validation errors for x, y, z, rx , ry , and
+master device’s position ti and orientation ri obtained via the              rz . The dataset size was incrementally increased from 1,000
+OTS, are normalized to values between 0 and 1 as θ̂, t̂i , and               to 60,000 samples, in steps of 1,000, and the corresponding
+r̂i respectively. The normalized encoder angles θ̂i and the                  validation errors were calculated and plotted. As evident in
+corresponding normalized outputs ŷi = [t̂i , r̂i ] are paired to            Figure 6, the validation errors for all parameters stabilize
+create a dataset D as,                                                       and no longer decrease significantly beyond a dataset size of
+                                                                             approximately 10,000. This suggests that increasing the dataset
+                          D = {(θ̂i , ŷi )}ni=1                      (1)    size beyond 10,000 samples provides negligible improvement
+                                                                             in model performance. Based on this result, the optimal dataset
+  To evaluate the model’s output, the mean squared error                     size for training the model was determined to be 10,000
+(MSE) loss function is defined as in Equation (2), and the                   samples.
+model is trained by minimizing this loss function as,
+                                                                             D. Real-time Robot Arm Control Using the Master Device
+                                      n
+                                1X                                             The trained ANN-based forward kinematics model (M ) is
+                     L(ŷ, y) =       (ŷi − yi )2                    (2)
+                                n i=1                                        then used to predict master device’s pose (t, r) from the input
+

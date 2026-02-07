@@ -1,0 +1,57 @@
+Similarly, an unsupervised neural network algorithm for real-         This paper is structured as follows: Section II introduces
+time forward kinematics analysis of under-constrained cable-       the structure and control system of the Stewart platform-based
+driven parallel robots was presented in [21]. Furthermore,         master device. Section III explains the data acquisition meth-
+artificial neural networks were applied in [22] to solve the       ods and the data-driven forward kinematics analysis approach.
+forward kinematics problem of a 3-RRS parallel mechanism,          Section IV presents experiments validating the accuracy of the
+showing that the neural network models outperform numerical        developed master device and the kinematic solution through
+approaches in terms of accuracy and consistency.                   real-time control of a 6-DoF robotic arm. Finally, Section V
+   While artificial neural networks (ANNs) have been widely        discusses the results and outlines future research directions.
+used for forward kinematics, alternative deep learning models
+have also been explored. For instance, Convolutional Neural             II. S TEWART P LATFORM BASED M ASTER D EVICE
+Networks (CNNs) were employed in [23] to extract forward           A. Design of Master Device by 6-RSS Stewart Platform
+kinematics for a 3-RRS robot, leveraging their ability to             As shown in Figure 1, the master device is composed of
+capture spatial dependencies. Similarly, a Long Short-Term         two parallel plates (a base plate and a top plate), six rotary
+Memory (LSTM) prediction model was utilized in [24] to             encoders, and a linkage system connecting them. The base
+address the forward kinematics problem of the Stewart plat-        plate forms the lower section of the platform, with six rotary
+form, benefiting from its capability to process sequential data.   encoders mounted on it. Each rotary encoder’s rotation axis
+More recently, a graph neural network-based approach was           is attached to one end of the first link, allowing the encoder
+introduced in [25], utilizing a graph distance matrix to enhance   to measure the angular displacement of the link. The other
+forward kinematics modeling for the Stewart platform. While        end of the first link is connected to a second link via a rod-
+these advanced models offer improved accuracy in some cases,       end bearing, and the distal end of this second link is similarly
+they often come at the cost of higher computational complex-       connected to the top plate with another rod-end bearing. This
+ity, making them less suitable for real-time applications.         structural configuration supports the top plate, enabling its con-
+   In contrast, this study presents a simple Artificial Neural     trol stick to move and adjust in six degrees of freedom. During
+Network (ANN)-based solution for the forward kinematics            operation, the six encoders capture the angular positions of the
+of a 6-RSS Stewart platform. By optimizing the network             first set of links, providing the data necessary for analyzing
+architecture and training it on high-quality data acquired via     and controlling the position and orientation of the top plate in
+an Optical Tracking System (OTS), our approach enables real-       Cartesian space. Each rotary encoder used in the system is an
+time estimation of the master device’s pose from six rotary        incremental encoder with a resolution of 500 P/R (E30S5-500-
+encoder measurements. This facilitates precise and responsive      6-L-5, Autonics Inc., Korea). Calibration is performed each
+position control of the slave robot in teleoperation scenarios.    time the master device controller is powered on, setting the
+The main contributions are summarized as follows:                  angle to 0 degrees when the first links are aligned horizontally
+   (1) ANN-based forward kinematics for 6-RSS Stewart plat-        with the base plate. To enhance the system’s stability and
+form: We propose the first known ANN-based method for solv-        functionality, torsion springs are mounted on the rotation axes
+ing the forward kinematics of the 6-RSS Stewart platform. Our      of the six rotary encoders. These springs prevent the first link
+data-driven model directly maps joint space (rotary encoder        from sagging under gravity, maintaining a horizontal position,
+angles) to Cartesian pose, achieving real-time performance         and also support the weight of the top plate via the second link.
+with high accuracy. A hyperparameter optimization strategy         This design helps ensure precise control and consistent motion
+is employed to further enhance training performance.               during operation in six degrees of freedom. Additionally, three
+   (2) High-quality training data via OTS: An Optical Tracking     centrally positioned coil springs further support the weight of
+System (OTS) is employed to collect accurate ground-truth          the top plate. These springs ensure that the control stick returns
+pose data in a direct and intuitive manner. This simple yet        to its central position when released by the user, improving the
+effective setup eliminates the need for idealized assumptions      stability and user experience of the device.
+or complex manual calibration procedures. As a result, the
+training dataset reliably captures the physical configuration of   B. Control Architecture for Master Device
+the master device, facilitating straightforward deployment and        Figure 2 illustrates the schematic structure of the master
+reproducibility in real-world scenarios.                           system, detailing the master device’s connection with the
+   (3) Experimental validation through teleoperation scenario:     master controller and the kinematic solver. When the control
+We validate our model through real-time position control of a      stick of the master device is manipulated, digital output signals
+6-DoF robotic arm. Unlike many previous studies that remain        from the six rotary encoders are simultaneously measured. To
+in simulation, we tested the proposed method in an actual tele-    transmit these signals to the kinematic solver in real-time, a
+operation setup using our custom-built 6-RSS Stewart platform      programmable interface board was developed using an STM32
+as the master device, paired with a slave robot operating in a     CPU (STMicroelectronics, Switzerland). This interface board
+separate coordinate system. Tracking error analysis confirms       collects the six encoder values from the master device in real-
+that the trained ANN model enables accurate and responsive         time, converts them into rotational angle values, and transmits
+control, demonstrating its feasibility for practical real-time     them via UDP at 1 kHz frequency to the robot control unit’s
+tele-robotic applications.                                         kinematic solver. This data processing system is defined as
+

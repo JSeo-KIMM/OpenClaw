@@ -1,0 +1,60 @@
+                                                                            Additionally, spatial trajectory tracking tests indicated that the
+                                                                            system could reproduce the motion profile with an RMSE of
+                                                                            1.28 mm. Furthermore, processing time analysis showed that
+                                                                            the ANN-based solution operates at 1 kHz, ensuring real-time
+                                                                            performance.
+                                                                               The proposed ANN-based method proved especially useful
+                                                                            for the 6-RSS Stewart platform, where closed-form kinematic
+                                                                            solutions are not available. By directly mapping joint angles
+                                                                            to Cartesian coordinates, our approach overcomes the highly
+                                                                            coupled nonlinearities and avoids the iterative computations of
+                                                                            conventional methods, leading to significant improvements in
+                                                                            both efficiency and stability.
+                                                                               Additionally, in this study, an OTS was utilized to directly
+                                                                            measure the pose of the master device and construct a precise
+                                                                            dataset for training. This approach offers a significant advan-
+                                                                            tage over the traditional method of using inverse kinematics
+                                                                            to compute a dataset based on link lengths and corresponding
+                                                                            poses [27], as it more accurately reflects the actual structure
+Fig. 11. Three-dimensional motion tracking analysis between master device   of the robot hardware. By relying on real-world measure-
+and robot motion. This figure presents a 3D motion trajectory comparison
+between the master device and robot arm, utilizing 480 samples
+                                                                            ment data instead of theoretical calculations, the ANN model
+                                                                            can better capture mechanical imperfections such as joint
+                                                                            misalignments, assembly tolerances, and structural deviations,
+                                                                            ultimately enhancing the precision of kinematic predictions
+                                                                            of currently manufactured device. Finally, the ANN-based
+                                                                            model enables high-speed kinematic calculation, making it
+                                                                            particularly advantageous for robotic teleoperation, surgical
+                                                                            robotics, and haptic feedback systems. Despite its advantages,
+                                                                            our approach has some limitations. The accuracy of the ANN
+                                                                            model is dependent on the quality and quantity of training
+                                                                            data, meaning that any sensor noise or inaccuracies during
+                                                                            OTS data acquisition could introduce errors into the model’s
+                                                                            predictions. Additionally, while the ANN model is optimized
+                                                                            for the 6-RSS Stewart platform, it may not generalize to other
+Fig. 12. Processing time for ANN-based forward kinematics and robot         Stewart platform configurations without additional retraining.
+control, which illustrates the computational efficiency of the ANN-based
+system, demonstrating 1 kHz real-time performance for robot control         Developing a more adaptable model would enhance its usabil-
+                                                                            ity across different robotic systems.
+                                                                               To further advance the applicability of the proposed ANN-
+shows the recorded times for each process, measured over                    based kinematics method, several research directions can be
+5,000 iterations. The average times for Proc. 1, Proc. 2, and               explored. Developing a more generalized ANN model that
+Proc. 3 were found to be 0.65 ms, 0.29 ms, and 0.06 ms,                     can handle different parallel mechanism configurations without
+respectively, with the total time for completing one cycle                  the need for extensive retraining would significantly enhance
+averaging 0.99 ms. These results demonstrate that the proposed              its versatility. Additionally, integrating additional sensor data,
+system can produce robot control signals at a real-time rate                such as force-torque sensors or IMUs, could improve ro-
+of 1 kHz. This confirms that the developed system is capable                bustness against external disturbances and enhance control
+enough to be utilized for real-time position control of the robot           accuracy. Moreover, implementing online learning techniques
+in practical applications.                                                  (e.g., reinforcement learning or continual learning) would
+                                                                            allow the ANN model to dynamically adapt to new operating
+                          V. D ISCUSSION                                    conditions and variations in the mechanical system.
+   In this study, we developed an ANN-based forward kinemat-
+ics solution for a 6-RSS Stewart platform-based master device.                                    VI. C ONCLUSION
+The proposed ANN model effectively predicts the position and                   This study introduced an ANN-based approach for solving
+orientation of the master device’s top plate based on rotary                the forward kinematics of a 6-RSS Stewart platform-based
+encoder values, enabling real-time control of a robotic system.             master device, ensuring efficient real-time analysis. OTS was
+Experimental results demonstrated that the system achieved a                employed to acquire labeled training data, accurately reflecting
+position tracking accuracy of 1.414 mm RMSE, confirming its                 the physical assembly without additional adjustments or ideal-
+effectiveness for precise control in teleoperation applications.            ized assumptions. Hyperparameter optimization was applied to
+

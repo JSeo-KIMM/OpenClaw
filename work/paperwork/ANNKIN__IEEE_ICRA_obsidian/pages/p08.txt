@@ -1,0 +1,75 @@
+determine the optimal training conditions for forward kinemat-                      [15] Y. Khattab, I. F. Zidane, M. El-Habrouk, and S. Rezeka, “Solving
+ics of the 6-RSS Stewart platform with the collected data. The                          Kinematics of a Parallel Manipulator Using Artificial Neural Networks,”
+                                                                                        31st Int. Conf. Comput. Theory Appl. ICCTA 2021 - Proc., pp. 84–89,
+trained ANN model was validated through the teleoperation                               2021, doi: 10.1109/ICCTA54562.2021.9916234.
+scenario by real-time position control of a 6-DoF robotic arm,                      [16] A. H. E. Ezzat A Showaib, “Artificial Neural Network Based Forward
+with motion tracking error analysis confirming its accuracy                             Kinematics Solution for Planar Parallel Manipulators Passing through
+                                                                                        Singular Configuration,” Adv. Robot. Autom., vol. 02, no. 02, 2013, doi:
+and feasibility. The ANN model effectively addressed the chal-                          10.4172/2168-9695.1000106.
+lenges associated with solving non-linear kinematic problems,                       [17] F. Tavassolian, H. Khotanlou, and P. Varshovi-Jaghargh, “Forward
+such as those in the 6-RSS Stewart platform, providing a                                Kinematics Analysis of a 3-PRR Planer Parallel Robot Using a Com-
+                                                                                        bined Method Based on the Neural Network,” Proceedings of the 2018
+robust alternative for applications requiring precise and rapid                         8th International Conference on Computer and Knowledge Engineering
+kinematic computation. As this method effectively solves the                            (ICCKE), pp. 320–325, Oct. 2018.
+forward kinematics problem for a complex structure of the                           [18] J. F. Garcı́a-Samartı́n and A. Barrientos, “Kinematic Modelling of
+                                                                                        a 3RRR Planar Parallel Robot Using Genetic Algorithms and Neural
+6-RSS Stewart platform, it can be extended to handle even                               Networks,” Machines, vol. 11, no. 10, pp. 1–26, 2023, doi: 10.3390/ma-
+more intricate mechanisms, contributing to the advancement                              chines11100952.
+of AI-driven kinematic modeling.                                                    [19] A. Zubizarreta, M. Larrea, E. Irigoyen, I. Cabanes, and E. Portillo, “Real
+                                                                                        time direct kinematic problem computation of the 3PRS robot using
+                                                                                        neural networks,” Neurocomputing, vol. 271, pp. 104–114, 2018, doi:
+                         ACKNOWLEDGMENTS                                                10.1016/j.neucom.2017.02.098.
+                                                                                    [20] H. Zhang, H. Fang, D. Zhang, X. Luo, and Q. Zou, “Forward
+                                                                                        kinematics and workspace determination of a novel redundantly actu-
+                               R EFERENCES                                              ated parallel manipulator,” Int. J. Aerosp. Eng., vol. 2019, 2019, doi:
+                                                                                        10.1155/2019/4769174.
+[1] D. Stewart, “A Platform with Six Degrees of Freedom,” Proceedings of            [21] U. A. Mishra and S. Caro, “Forward Kinematics for Suspended Under-
+    the Institution of Mechanical Engineers, vol. 180, no. 1, pp. 371–386,              Actuated Cable-Driven Parallel Robots with Elastic Cables: A Neu-
+    1965, doi: 10.1243/pime.proc.1965.180.029.02.                                       ral Network Approach,” J. Mech. Robot., vol. 14, no. 4, 2022, doi:
+[2] R. V. Virgil Petrescu, R. Aversa, A. Apicella, S. Kozaitis, T. Abu-                 10.1115/1.4054407.
+    Lebdeh, and F. I. T. Petrescu, “Inverse Kinematics of a Stewart Plat-           [22] A. Prado, H. Zhang, and S. K. Agrawal, “Artificial Neural Networks to
+    form,” J. Mechatronics Robot., vol. 2, no. 1, pp. 45–59, 2018, doi:                 Solve Forward Kinematics of a Wearable Parallel Robot with Semi-rigid
+    10.3844/jmrsp.2018.45.59.                                                           Links,” Proc. - IEEE Int. Conf. Robot. Autom., vol. 2021-May, no. Icra,
+[3] S. Shim, S.-Y. Lee, S.-J. Joo, and J. Seo, “Denavit-Hartenberg Notation-            pp. 14524–14530, 2021, doi: 10.1109/ICRA48506.2021.9561246.
+    based Kinematic Constraint Equations for Forward Kinematics of the 3-6          [23] S. A. A. Moosavian, O. Mahdizadeh, S. Hallajian, S. Ashrafi, M.
+    Stewart Platform,” Journal of Mechanisms and Robotics, vol. 14, no. 5,              Jamali, and V. Akbari, “Forward Kinematics Development of a 3-
+    Feb. 2022, doi: 10.1115/1.4053822.                                                  RRS Parallel Manipulator for Real-Time Control,” International Con-
+[4] C. I. Huang, C. F. Chang, M. Y. Yu, and L. C. Fu, “Sliding-mode tracking            ference on Robotics and Mechatronics, pp. 459–465, Nov. 2022, doi:
+    control of the stewart platform,” 2004 5th Asian Control Conf., vol. 1,             10.1109/ICRoM57054.2022.10025318.
+    no. August 2004, pp. 562–569, 2004, doi: 10.1109/ASCC.2004.184819.              [24] Q. Wang, M. Xue, J. Su, Q. Liu, B. Chen, and M. Fang, “For-
+[5] Q. Zhu and Z. Zhang, “An Efficient Numerical Method for Forward                     ward Kinematics Solution for Stewart and TBBP: A Neural Net-
+    Kinematics of Parallel Robots,” IEEE Access, vol. 7, pp. 128758–128766,             work Approach Based on LSTM,” pp. 227–235, Oct. 2022, doi:
+    2019, doi: 10.1109/ACCESS.2019.2940064.                                             10.1109/RCAE56054.2022.9996010.
+[6] D. Jakobović and L. Jelenković, “The forward and inverse kinematics           [25] H. Zhu, W. Xu, J. Huang, and J. Li, “DisGNet: A Distance Graph Neural
+    problems for stewart parallel mechanisms,” CIM 2002 Comput. Integr.                 Network for Forward Kinematics Learning of Gough-Stewart Platform,”
+    Manuf. High Speed Mach. - 8th Int. Sci. Conf. Prod. Eng., 2002.                     arXiv.Org, p. abs/2402.09077, 2024, doi: 10.48550/arxiv.2402.09077.
+[7] C. C. Nguyen, S. S. Antrazi, Z.-L. Zhou, and C. E. Campbell, “Analysis          [26] L. Li, K. Jamieson, A. Rostamizadeh, E. Gonina, M. Hardt, B. Recht,
+    and implementation of a 6 DOF Stewart Platform-based robotic wrist,”                and A. Talwalkar, ”A system for massively parallel hyperparameter
+    Computers & Electrical Engineering, vol. 17, no. 3, pp. 191–203, Jul.               tuning,” arXiv preprint arXiv:1810.05934, 2018.
+    1991, doi: 10.1016/0045-7906(91)90035-X.                                        [27] D. S. Chauhan and P. R. Vundavilli, “Forward Kinematics of the
+[8] N., Grishin., Kirill, Dmitrievich, Bukharov., Larisa, Rybak., V., Zhuk.             Stewart Parallel Manipulator Using Machine Learning,” International
+    (2023). ”Numerical method for solving the forward kinematics to control             Journal of Computational Methods, vol. 19, no. 08, Mar. 2022, doi:
+    the Gough-Stewart platform”. Nucleation and Atmospheric Aerosols, doi:              10.1142/s0219876221420093.
+    10.1063/5.0111959
+[9] A. Morell, M. Tarokh, and L. Acosta, “Solving the forward kine-
+    matics problem in parallel robots using Support Vector Regression,”
+    Eng. Appl. Artif. Intell., vol. 26, no. 7, pp. 1698–1706, 2013, doi:
+    10.1016/j.engappai.2013.03.011.
+[10] A. A. Yagur and A. A. Belov, “Inverse kinematics analysis and path
+    planning for 6DOF RSS parallel manipulator,” 2018 22nd Int. Conf. Syst.
+    Theory, Control Comput. ICSTCC 2018 - Proc., pp. 789–793, 2018, doi:
+    10.1109/ICSTCC.2018.8540728.
+[11] F. Szufnarowski, “Stewart platform with fixed rotary actuators : a low
+    cost design study,” Fac. Technol. Bielefeld Univ. Ger., pp. 1–11, 2013,
+    doi: 10.1016/S0094-114X(99)00006-3.
+[12] K. Tanakitkorn, “Design Optimisation of a 6-RSS Parallel Manipulator
+    via Surrogate Modelling,” vol. 501, no. 1, p. 012020, Apr. 2019, doi:
+    10.1088/1757-899X/501/1/012020.
+[13] P. J. Parikh and S. S. Y. Lam, “A hybrid strategy to solve the forward
+    kinematics problem in parallel manipulators,” IEEE Trans. Robot., vol.
+    21, no. 1, pp. 18–25, 2005, doi: 10.1109/TRO.2004.833801.
+[14] P. J. Parikh and S. S. Lam, “Solving the forward kinematics problem in
+    parallel manipulators using an iterative artificial neural network strategy,”
+    Int. J. Adv. Manuf. Technol., vol. 40, no. 5–6, pp. 595–606, 2009, doi:
+    10.1007/s00170-007-1360-x.
+

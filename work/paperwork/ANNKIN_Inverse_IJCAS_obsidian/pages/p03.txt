@@ -1,0 +1,59 @@
+                             End-to-End Inverse Kinematics Framework for 6-RSS Stewart Platform                              3
+
+Table 1. Design parameters for closed-form IK of the 6-
+         RSS Stewart Platform prototype.
+ Parameters             Values for the prototype
+ l                      100 mm
+ r                      45 mm
+ h                      86.72 mm
+ φi,bottom              [−103◦ , −77◦ , 17◦ , 43◦ , 137◦ , 163◦ ]
+ φi,top                 [−96◦ , −83◦ , 23◦ , 36◦ , 143◦ , 156◦ ]
+
+
+
+
+                                                                    Fig. 3. System setup for training data acquisition.
+                                                                    Table 2. Hyperparameters for the LSTM-based DNN
+                                                                             model.
+                                                                     Types                          Parameters       Tuned
+                                                                     LSTM Layers                         2           Fixed
+                                                                     LSTM Hidden States                 512          Tuned
+                                                                     LSTM Dropout                      1e-4          Tuned
+                                                                     DNN Hidden Layers                   2           Fixed
+Fig. 2. LSTM-based DNN model for IK solution.                        Nodes of DNN Layer 1 (N1)          512          Tuned
+                                                                     Nodes of DNN Layer 2 (N2)         4096          Tuned
+2.3. LSTM-based IK solution                                          Activation Function              ReLU           Fixed
+2.3.1 Network architecture for LSTM-based IK                         Optimizer                        Adam           Fixed
+          model                                                      Epoch                              30           Fixed
+   The architecture of the LSTM-based DNN is composed                Learning Rate                     6e-4          Tuned
+                                                                     Batch Size                         64           Tuned
+of an input layer, hidden layers, and an output layer as
+illustrated in Fig. 2. The input vector X is defined as
+[x, y, z, α, β , γ], representing the position (x, y, z) and ori-
+entation (α, β , γ) of the moving plate. The time series of         During this process, the actual joint angles were measured
+X is fed into the first LSTM layer (layer 1), which ex-             by the motor encoders, and the pose of the top plate was
+tracts time-dependent features and passes them to a second          simultaneously tracked using the OTS (Atracsys FTK500,
+LSTM layer (layer 2) to capture deeper temporal dynam-              Atracsys Inc., Switzerland) at a frequency of 62.5 Hz
+ics. The final hidden states from the LSTM are forwarded            (∼16 ms).
+to the fully connected layers and transformed into a high-
+dimensional feature vector [h1 , h2 , ..., hN2 ]. This vector is    2.3.3 Hyperparameter tuning and model training
+mapped to six outputs [θ1 , ..., θ6 ], corresponding to the            The hyperparameters for training are summarized in Ta-
+joint angles of the actuators. Before being fed into the net-       ble 2. We employed the Ray Tune library [22] for hyperpa-
+work, all input variables were normalized to a range of [0,         rameter optimization, which incorporates random search
+1] to ensure convergence stability and handle the different         with a scheduler based on the Asynchronous Successive
+scales of position (mm) and orientation (degrees) data.             Halving Algorithm (ASHA). To ensure computational ef-
+                                                                    ficiency and narrow down the search space, some param-
+2.3.2 Training data acquisition                                     eters were fixed to standard configurations known to en-
+   Fig. 3 shows the data acquisition setup. To ensure that          sure stable convergence in regression tasks. The third col-
+the training dataset reflects the actual dynamic character-         umn of Table 2 specifies which parameters were tuned and
+istics of the robot under active control (e.g., gear back-          which were fixed.
+lash and friction), a ‘teaching-and-playback’ data collec-             In data acquisition stage, we recorded 40,000 input–
+tion strategy was employed.                                         label pairs. Among these, 20% was reserved as a test
+   First, in the demonstration based teaching phase, the            dataset, and 10% of the remaining data was used for val-
+robot was set to a passive (torque-off) mode. A human op-           idation. Therefore, 28,800 data samples were used for
+erator manually manipulated the top plate to explore the            model training. The performance of the trained model was
+workspace, and the corresponding joint angle trajectories           evaluated using the test dataset, as shown in Fig. 4(a),
+were recorded.                                                      which visualizes the angular errors between the predicted
+   Second, in the playback phase, the robot autonomously            values and the ground truth. Each dot represents the pre-
+replayed the recorded joint trajectories in active mode.            diction error in degrees for a single data point, with dif-
+
